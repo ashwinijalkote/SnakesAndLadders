@@ -1,5 +1,7 @@
-package com.game.model;
+package com.game.simulator;
 
+import com.game.model.*;
+import com.game.simulator.Game;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,8 +10,8 @@ import org.mockito.Mockito;
 
 public class GameTest {
 
-    Snake [] snakes;
-    Ladder [] ladders;
+    Snake[] snakes;
+    Ladder[] ladders;
     Board board;
     Player player1;
     Player player2;
@@ -46,8 +48,8 @@ public class GameTest {
     }
 
     @Test
-    public void testGamePlayForPlayer1() {
-        Game game = new Game(board, players, dice);
+    public void testPlayerPositionAndQueueAfterOneDiceRoll() {
+        Game game = new Game(1, board, players, dice);
         Mockito.when(dice.roll()).thenReturn(3);
         GameState gameState = game.play();
         Assertions.assertEquals(gameState.getPlayerPosition().get(player1), 3);
@@ -56,9 +58,9 @@ public class GameTest {
     }
 
     @Test
-    public void testGamePlayForPlayer2() {
+    public void testPlayerPositionAndQueueAfterTwoDiceRoll() {
         Mockito.when(dice.roll()).thenReturn(3,2);
-        Game game = new Game(board, players, dice);
+        Game game = new Game(1, board, players, dice);
         game.play();
         GameState gameState = game.play();
         Assertions.assertEquals(gameState.getPlayerPosition().get(player1), 3);
@@ -67,9 +69,9 @@ public class GameTest {
     }
 
     @Test
-    public void testGamePlayForPlayerWhenDiceRollsSix() {
+    public void testPlayerPositionAndQueueForPlayerWhenDiceRollsSix() {
         Mockito.when(dice.roll()).thenReturn(3,2,6);
-        Game game = new Game(board, players, dice);
+        Game game = new Game(1, board, players, dice);
         game.play();
         game.play();
         GameState gameState = game.play();
@@ -77,5 +79,4 @@ public class GameTest {
         Assertions.assertEquals(gameState.getPlayerPosition().get(player2), 2);
         Assertions.assertEquals(gameState.getPlayerTurnQueue().peek(), player1);
     }
-
 }

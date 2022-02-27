@@ -1,7 +1,8 @@
 package com.game.simulator;
 
 import com.game.model.*;
-import com.game.processor.StatsProcessor;
+import com.game.processor.GameStatsProcessor;
+import com.game.processor.SimulationStatsProcessor;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -28,19 +29,33 @@ public class Simulator {
         return isWon.get();
     }
 
-    public StatsProcessor.SimulatorOutput run() {
-        Game game = new Game(board, players, dice);
+    public SimulationStatistics run() {
+        SimulationStatistics simulationStatistics = new SimulationStatistics();
         for (int i =0 ; i < numberOfSimulations; i++) {
-            StatsProcessor processor = new StatsProcessor();
-            GameState previousState;
+            Game game = new Game(i+1, board, players, dice);
+            GameStatistics gameStatistics = new GameStatistics();
+            GameState previousState = game.getInitialGameState();
+
             GameState currentState = null;
+//            System.out.println(previousState);
+
             while(true) {
-                previousState = currentState;
                 currentState = game.play();
-                processor.process(currentState,previousState);
-                if (isGameWon(currentState)) break;
+                GameStatsProcessor.process(gameStatistics, currentState, previousState, game.getBoard());
+//                System.out.print(currentState);
+ //               System.out.println(gameStatistics);
+
+                if (isGameWon(currentState)) {
+                    System.out.println("winner : " + previousState.getPlayerTurnQueue().peek().getName());
+                    break;
+                }
+                previousState = currentState;
             }
+            System.out.println(gameStatistics);
+            SimulationStatsProcessor.process(simulationStatistics, gameStatistics, i+1);
+            System.out.println(simulationStatistics);
+
         }
-        return null;
+        return simulationStatistics;
     }
 }

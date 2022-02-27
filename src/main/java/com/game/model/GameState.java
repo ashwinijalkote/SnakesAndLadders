@@ -8,15 +8,11 @@ public class GameState {
     ArrayDeque<Player> playerTurnQueue;
     Map<Player, Integer> playerPosition = new HashMap<>();
     int rollValue;
-    boolean isClimb= false;
-    boolean isSlide= false;
 
-    public GameState(ArrayDeque<Player> playerTurnQueue, Map<Player, Integer> playerPosition, int rollValue, boolean isClimb, boolean isSlide) {
+    public GameState(ArrayDeque<Player> playerTurnQueue, Map<Player, Integer> playerPosition, int rollValue) {
         this.playerTurnQueue = playerTurnQueue.clone();
         this.playerPosition.putAll(playerPosition);
         this.rollValue = rollValue;
-        this.isClimb = isClimb;
-        this.isSlide = isSlide;
     }
 
     public ArrayDeque<Player> getPlayerTurnQueue() {
@@ -31,19 +27,25 @@ public class GameState {
         return rollValue;
     }
 
-    public boolean isClimb() {
-        return isClimb;
+    public String printPlayerPosition() {
+        StringBuilder printPlayerPosition= new StringBuilder();
+        playerPosition.forEach((player, pos) -> {
+           printPlayerPosition.append(player.getName() + " :" + pos +  "\t");
+        });
+        return printPlayerPosition.toString();
     }
 
-    public boolean isSlide() {
-        return isSlide;
+    public String printPlayerQueue() {
+        StringBuilder printPlayerQueue = new StringBuilder();
+        playerTurnQueue.forEach(player ->  printPlayerQueue.append(player.getName() + "\t"));
+        return printPlayerQueue.toString();
     }
 
     @Override
     public String toString() {
         return "GameState{" +
-                "playerTurnQueue=" + playerTurnQueue.toString() +
-                ", playerPosition=" + playerPosition.toString() +
+                "playerTurnQueue=" + printPlayerQueue()+
+                ", playerPosition=" + printPlayerPosition() +
                 ", rollValue=" + rollValue +
                 '}';
     }
